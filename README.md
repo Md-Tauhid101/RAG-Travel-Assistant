@@ -33,7 +33,7 @@ It intelligently caches previous user interactions to **reduce cost and latency*
 ## ⚙️ System Architecture
 
 ```text
-                ┌────────────────────────────┐
+                ┌───────────────────────────-─┐
                 │        User Query           │
                 └─────────────┬───────────────┘
                               │
@@ -42,13 +42,13 @@ It intelligently caches previous user interactions to **reduce cost and latency*
                 │     Semantic Cache (Redis) │
                 │  - Checks if similar query │
                 │    exists in cache         │
-                └─────────────┬───────────────┘
+                └─────────────┬──────────────┘
                               │ (cache miss)
                               ▼
         ┌────────────────────────────┬────────────────────────────┐
         │                            │                            │
         ▼                            ▼                            ▼
-┌──────────────────┐        ┌──────────────────┐         ┌──────────────────────────┐
+┌───────────────-───┐        ┌──────────────────┐         ┌──────────────────────────┐
 │ Vector DB         │        │ Graph DB         │         │ Asynchronous Execution   │
 │ (Pinecone)        │        │ (Neo4j)          │         │ (asyncio + to_thread)    │
 │ Retrieves seman-  │        │ Fetches relation │         │ Runs both tasks in       │
@@ -58,13 +58,13 @@ It intelligently caches previous user interactions to **reduce cost and latency*
            │                             │
            └──────────────┬──────────────┘
                           ▼
-               ┌────────────────────────────┐
+               ┌───────────────────────-─────┐
                │   Context Summarization     │
                │  Merges vector + graph data │
                │  into a single summary      │
                └─────────────┬───────────────┘
                               ▼
-               ┌────────────────────────────┐
+               ┌──────────────────────────-──┐
                │     LLM Prompt Builder      │
                │  Constructs prompt with:    │
                │  - Semantic summary         │
@@ -75,12 +75,12 @@ It intelligently caches previous user interactions to **reduce cost and latency*
                │         LLM (OpenAI)       │
                │  Generates answer based on │
                │  summarized hybrid context │
-               └─────────────┬───────────────┘
+               └─────────────┬──────────────┘
                               ▼
                ┌────────────────────────────┐
                │   Cache Result in Redis    │
                │  for future retrievals     │
-               └─────────────┬───────────────┘
+               └─────────────┬──────────────┘
                               ▼
                ┌────────────────────────────┐
                │        Final Answer        │
