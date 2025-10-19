@@ -1,0 +1,9 @@
+neo4j==5.9.0
+openai==1.0.0
+pinecone==3.0.0
+pyvis==0.3.1
+networkx==3.1
+tqdm
+python-dotenv
+redis
+scikit-learn
